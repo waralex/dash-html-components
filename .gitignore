@@ -17,10 +17,8 @@ lib/metadata.json
 /scripts/data
 !/scripts/data/elements.txt
 
-/src
 
 /build
-/dash_html_components
 /inst
 /man
 /R
