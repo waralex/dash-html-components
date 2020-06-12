@@ -7,6 +7,7 @@ export html_td
     html_td(children::Any;kwargs...)
     html_td(children_maker::Function;kwargs...)
 
+
 A Td component.
 Td is a wrapper for the <td> HTML5 element.
 For detailed attribute info see:
@@ -16,9 +17,9 @@ Keyword arguments:
 - `id` (String; optional): The ID of this component, used to identify dash components
 in callbacks. The ID needs to be unique across all of the
 components in an app.
-- `n_clicks` (Float64; optional): An integer that represents the number of times
+- `n_clicks` (Real; optional): An integer that represents the number of times
 that this element has been clicked on.
-- `n_clicks_timestamp` (Float64; optional): An integer that represents the time (in ms since 1970)
+- `n_clicks_timestamp` (Real; optional): An integer that represents the time (in ms since 1970)
 at which n_clicks changed. This can be used to tell
 which button was changed most recently.
 - `key` (String; optional): A unique identifier for the component, used to improve
@@ -27,9 +28,9 @@ See https://reactjs.org/docs/lists-and-keys.html for more info
 - `role` (String; optional): The ARIA role attribute
 - `data-*` (String; optional): A wildcard data attribute
 - `aria-*` (String; optional): A wildcard aria attribute
-- `colSpan` (String | Float64; optional): The colspan attribute defines the number of columns a cell should span.
+- `colSpan` (String | Real; optional): The colspan attribute defines the number of columns a cell should span.
 - `headers` (String; optional): IDs of the <th> elements which applies to this element.
-- `rowSpan` (String | Float64; optional): Defines the number of rows a table cell should span over.
+- `rowSpan` (String | Real; optional): Defines the number of rows a table cell should span over.
 - `accessKey` (String; optional): Keyboard shortcut to activate or add focus to the element.
 - `className` (String; optional): Often used with CSS to style elements with common properties.
 - `contentEditable` (String; optional): Indicates whether the element's content is editable.
@@ -49,28 +50,11 @@ Those elements have the following types:
   - `component_name` (String; optional): Holds the name of the component that is loading
 """
 function html_td(; kwargs...)
-        available_props = Set(Symbol[:children, :id, :n_clicks, :n_clicks_timestamp, :key, :role, :colSpan, :headers, :rowSpan, :accessKey, :className, :contentEditable, :contextMenu, :dir, :draggable, :hidden, :lang, :spellCheck, :style, :tabIndex, :title, :loading_state])
-        wild_props = Set(Symbol[Symbol("data-"), Symbol("aria-")])
-        wild_regs = r"^(?<prop>data-|aria-)"
-
-        result = Component("Td", "dash_html_components", Dict{Symbol, Any}(), available_props, Set(Symbol[Symbol("data-"), Symbol("aria-")]))
-
-        for (prop, value) = pairs(kwargs)
-            m = match(wild_regs, string(prop))
-            if (length(wild_props) == 0 || isnothing(m)) && !(prop in available_props)
-                throw(ArgumentError("Invalid property $(string(prop)) for component " * "html_td"))
-            end
-
-            push!(result.props, prop => Front.to_dash(value))
-        end
-
-    return result
+        available_props = Symbol[:children, :id, :n_clicks, :n_clicks_timestamp, :key, :role, :colSpan, :headers, :rowSpan, :accessKey, :className, :contentEditable, :contextMenu, :dir, :draggable, :hidden, :lang, :spellCheck, :style, :tabIndex, :title, :loading_state]
+        wild_props = Symbol[Symbol("data-"), Symbol("aria-")]
+        return Component("html_td", "Td", "dash_html_components", available_props, wild_props; kwargs...)
 end
 
-function html_td(children::Any; kwargs...)
-    result = html_td(;kwargs...)
-    push!(result.props, :children => Front.to_dash(children))
-    return result
-end
-
+html_td(children::Any; kwargs...) = html_td(;kwargs..., children = children)
 html_td(children_maker::Function; kwargs...) = html_td(children_maker(); kwargs...)
+

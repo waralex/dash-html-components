@@ -7,6 +7,7 @@ export html_objectel
     html_objectel(children::Any;kwargs...)
     html_objectel(children_maker::Function;kwargs...)
 
+
 An ObjectEl component.
 ObjectEl is a wrapper for the <object> HTML5 element.
 For detailed attribute info see:
@@ -16,9 +17,9 @@ Keyword arguments:
 - `id` (String; optional): The ID of this component, used to identify dash components
 in callbacks. The ID needs to be unique across all of the
 components in an app.
-- `n_clicks` (Float64; optional): An integer that represents the number of times
+- `n_clicks` (Real; optional): An integer that represents the number of times
 that this element has been clicked on.
-- `n_clicks_timestamp` (Float64; optional): An integer that represents the time (in ms since 1970)
+- `n_clicks_timestamp` (Real; optional): An integer that represents the time (in ms since 1970)
 at which n_clicks changed. This can be used to tell
 which button was changed most recently.
 - `key` (String; optional): A unique identifier for the component, used to improve
@@ -28,11 +29,11 @@ See https://reactjs.org/docs/lists-and-keys.html for more info
 - `data-*` (String; optional): A wildcard data attribute
 - `aria-*` (String; optional): A wildcard aria attribute
 - `form` (String; optional): Indicates the form that is the owner of the element.
-- `height` (String | Float64; optional): Specifies the height of elements listed here. For all other elements, use the CSS height property.        Note: In some instances, such as <div>, this is a legacy attribute, in which case the CSS height property should be used instead.
+- `height` (String | Real; optional): Specifies the height of elements listed here. For all other elements, use the CSS height property.        Note: In some instances, such as <div>, this is a legacy attribute, in which case the CSS height property should be used instead.
 - `name` (String; optional): Name of the element. For example used by the server to identify the fields in form submits.
 - `type` (String; optional): Defines the type of the element.
 - `useMap` (String; optional)
-- `width` (String | Float64; optional): For the elements listed here, this establishes the element's width.        Note: For all other instances, such as <div>, this is a legacy attribute, in which case the CSS width property should be used instead.
+- `width` (String | Real; optional): For the elements listed here, this establishes the element's width.        Note: For all other instances, such as <div>, this is a legacy attribute, in which case the CSS width property should be used instead.
 - `accessKey` (String; optional): Keyboard shortcut to activate or add focus to the element.
 - `className` (String; optional): Often used with CSS to style elements with common properties.
 - `contentEditable` (String; optional): Indicates whether the element's content is editable.
@@ -52,28 +53,11 @@ Those elements have the following types:
   - `component_name` (String; optional): Holds the name of the component that is loading
 """
 function html_objectel(; kwargs...)
-        available_props = Set(Symbol[:children, :id, :n_clicks, :n_clicks_timestamp, :key, :role, :form, :height, :name, :type, :useMap, :width, :accessKey, :className, :contentEditable, :contextMenu, :dir, :draggable, :hidden, :lang, :spellCheck, :style, :tabIndex, :title, :loading_state])
-        wild_props = Set(Symbol[Symbol("data-"), Symbol("aria-")])
-        wild_regs = r"^(?<prop>data-|aria-)"
-
-        result = Component("ObjectEl", "dash_html_components", Dict{Symbol, Any}(), available_props, Set(Symbol[Symbol("data-"), Symbol("aria-")]))
-
-        for (prop, value) = pairs(kwargs)
-            m = match(wild_regs, string(prop))
-            if (length(wild_props) == 0 || isnothing(m)) && !(prop in available_props)
-                throw(ArgumentError("Invalid property $(string(prop)) for component " * "html_objectel"))
-            end
-
-            push!(result.props, prop => Front.to_dash(value))
-        end
-
-    return result
+        available_props = Symbol[:children, :id, :n_clicks, :n_clicks_timestamp, :key, :role, :form, :height, :name, :type, :useMap, :width, :accessKey, :className, :contentEditable, :contextMenu, :dir, :draggable, :hidden, :lang, :spellCheck, :style, :tabIndex, :title, :loading_state]
+        wild_props = Symbol[Symbol("data-"), Symbol("aria-")]
+        return Component("html_objectel", "ObjectEl", "dash_html_components", available_props, wild_props; kwargs...)
 end
 
-function html_objectel(children::Any; kwargs...)
-    result = html_objectel(;kwargs...)
-    push!(result.props, :children => Front.to_dash(children))
-    return result
-end
-
+html_objectel(children::Any; kwargs...) = html_objectel(;kwargs..., children = children)
 html_objectel(children_maker::Function; kwargs...) = html_objectel(children_maker(); kwargs...)
+

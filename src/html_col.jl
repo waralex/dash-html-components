@@ -7,6 +7,7 @@ export html_col
     html_col(children::Any;kwargs...)
     html_col(children_maker::Function;kwargs...)
 
+
 A Col component.
 Col is a wrapper for the <col> HTML5 element.
 For detailed attribute info see:
@@ -16,9 +17,9 @@ Keyword arguments:
 - `id` (String; optional): The ID of this component, used to identify dash components
 in callbacks. The ID needs to be unique across all of the
 components in an app.
-- `n_clicks` (Float64; optional): An integer that represents the number of times
+- `n_clicks` (Real; optional): An integer that represents the number of times
 that this element has been clicked on.
-- `n_clicks_timestamp` (Float64; optional): An integer that represents the time (in ms since 1970)
+- `n_clicks_timestamp` (Real; optional): An integer that represents the time (in ms since 1970)
 at which n_clicks changed. This can be used to tell
 which button was changed most recently.
 - `key` (String; optional): A unique identifier for the component, used to improve
@@ -47,28 +48,11 @@ Those elements have the following types:
   - `component_name` (String; optional): Holds the name of the component that is loading
 """
 function html_col(; kwargs...)
-        available_props = Set(Symbol[:children, :id, :n_clicks, :n_clicks_timestamp, :key, :role, :span, :accessKey, :className, :contentEditable, :contextMenu, :dir, :draggable, :hidden, :lang, :spellCheck, :style, :tabIndex, :title, :loading_state])
-        wild_props = Set(Symbol[Symbol("data-"), Symbol("aria-")])
-        wild_regs = r"^(?<prop>data-|aria-)"
-
-        result = Component("Col", "dash_html_components", Dict{Symbol, Any}(), available_props, Set(Symbol[Symbol("data-"), Symbol("aria-")]))
-
-        for (prop, value) = pairs(kwargs)
-            m = match(wild_regs, string(prop))
-            if (length(wild_props) == 0 || isnothing(m)) && !(prop in available_props)
-                throw(ArgumentError("Invalid property $(string(prop)) for component " * "html_col"))
-            end
-
-            push!(result.props, prop => Front.to_dash(value))
-        end
-
-    return result
+        available_props = Symbol[:children, :id, :n_clicks, :n_clicks_timestamp, :key, :role, :span, :accessKey, :className, :contentEditable, :contextMenu, :dir, :draggable, :hidden, :lang, :spellCheck, :style, :tabIndex, :title, :loading_state]
+        wild_props = Symbol[Symbol("data-"), Symbol("aria-")]
+        return Component("html_col", "Col", "dash_html_components", available_props, wild_props; kwargs...)
 end
 
-function html_col(children::Any; kwargs...)
-    result = html_col(;kwargs...)
-    push!(result.props, :children => Front.to_dash(children))
-    return result
-end
-
+html_col(children::Any; kwargs...) = html_col(;kwargs..., children = children)
 html_col(children_maker::Function; kwargs...) = html_col(children_maker(); kwargs...)
+
