@@ -1,6 +1,6 @@
 
 name = "DashHtmlComponents"
-uuid = "1b08a953-4be3-4667-9a23-7fff6d44f660"
+uuid = "1b08a953-4be3-4667-9a23-24100242a84a"
 authors = ["Chris Parmer <chris@plotly.com>"]
 version = "1.0.3"
 
