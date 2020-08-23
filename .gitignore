@@ -1,6 +1,5 @@
 .tox
-build/
-dist/
+
 node_modules/
 .npm
 vv/
@@ -14,14 +13,11 @@ lib/bundle.js.map
 lib/metadata.json
 .idea
 
-/scripts/data
+
 !/scripts/data/elements.txt
 
 /src
 
-/build
-/dash_html_components
-/inst
 /man
 /R
 DESCRIPTION
